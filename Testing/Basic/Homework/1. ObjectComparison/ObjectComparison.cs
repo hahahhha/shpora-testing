@@ -1,5 +1,7 @@
 ﻿using NUnit.Framework;
 using NUnit.Framework.Legacy;
+using FluentAssertions;
+using FluentAssertions.Equivalency;
 
 namespace HomeExercise.Tasks.ObjectComparison;
 public class ObjectComparison
@@ -14,16 +16,12 @@ public class ObjectComparison
         var expectedTsar = new Person("Ivan IV The Terrible", 54, 170, 70,
             new Person("Vasili III of Russia", 28, 170, 60, null));
 
-        // Перепишите код на использование Fluent Assertions.
-        ClassicAssert.AreEqual(actualTsar.Name, expectedTsar.Name);
-        ClassicAssert.AreEqual(actualTsar.Age, expectedTsar.Age);
-        ClassicAssert.AreEqual(actualTsar.Height, expectedTsar.Height);
-        ClassicAssert.AreEqual(actualTsar.Weight, expectedTsar.Weight);
-
-        ClassicAssert.AreEqual(expectedTsar.Parent!.Name, actualTsar.Parent!.Name);
-        ClassicAssert.AreEqual(expectedTsar.Parent.Age, actualTsar.Parent.Age);
-        ClassicAssert.AreEqual(expectedTsar.Parent.Height, actualTsar.Parent.Height);
-        ClassicAssert.AreEqual(expectedTsar.Parent.Parent, actualTsar.Parent.Parent);
+        // в прошлой версии была проблема, что тестирование происходило отдельно по каждому полю
+        // при добавлении новых полей или свойств в класс их нужно было бы дописать и в тесты
+        // плюс можно случайно упустить какое-то поле
+        // в этом и есть проблема 
+        actualTsar.Should().BeEquivalentTo(expectedTsar, options => options.Excluding(
+            (IMemberInfo member) => member.Name == nameof(Person.Id)));
     }
 
     [Test]
@@ -35,6 +33,13 @@ public class ObjectComparison
             new Person("Vasili III of Russia", 28, 170, 60, null));
 
         // Какие недостатки у такого подхода? 
+
+        // все еще остается проблема, что мы можем упустить поле и что при добавлении новых полей
+        // их так же нужно дописать, только уже в метод AreEqual, это уже проще
+        // при этом в случае неуспешного теста будет мало информации, т.к.
+        // ClassicAssert.True просто сообщит, что ожидалось True, а получено False
+        // кроме того, из-за использования && в условии в случае, например, неверного имени
+        // мы не узнаем результаты проверки возраста, роста ... т.е. остальных полей
         ClassicAssert.True(AreEqual(actualTsar, expectedTsar));
     }
 
