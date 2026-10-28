@@ -11,9 +11,9 @@ public class NumberValidator
 
     public NumberValidator(int precision, int scale = 0, bool onlyPositive = false)
     {
-        this.precision = precision;
-        this.scale = scale;
-        this.onlyPositive = onlyPositive;
+        this.precision = precision; // общее количество цифр с учетом знака, но без учета точки/запятой
+        this.scale = scale; // количество цифр после точки/запятой
+        this.onlyPositive = onlyPositive; // только положительные
         if (precision <= 0)
             throw new ArgumentException("precision must be a positive number");
         if (scale < 0 || scale >= precision)

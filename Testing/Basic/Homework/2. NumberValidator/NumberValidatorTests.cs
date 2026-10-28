@@ -1,31 +1,193 @@
-﻿
+﻿using FluentAssertions;
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 namespace HomeExercise.Tasks.NumberValidator;
 
 [TestFixture]
 public class NumberValidatorTests
 {
-    [Test]
-    public void Test()
-    {
-        Assert.Throws<ArgumentException>(() => new NumberValidator(-1, 2, true));
-        Assert.DoesNotThrow(() => new NumberValidator(1, 0, true));
-        Assert.Throws<ArgumentException>(() => new NumberValidator(-1, 2, false));
-        Assert.DoesNotThrow(() => new NumberValidator(1, 0, true));
+    // тесты конструктора
 
-        ClassicAssert.IsTrue(new NumberValidator(17, 2, true).IsValidNumber("0.0"));
-        ClassicAssert.IsTrue(new NumberValidator(17, 2, true).IsValidNumber("0"));
-        ClassicAssert.IsTrue(new NumberValidator(17, 2, true).IsValidNumber("0.0"));
-        ClassicAssert.IsFalse(new NumberValidator(3, 2, true).IsValidNumber("00.00"));
-        ClassicAssert.IsFalse(new NumberValidator(3, 2, true).IsValidNumber("-0.00"));
-        ClassicAssert.IsTrue(new NumberValidator(17, 2, true).IsValidNumber("0.0"));
-        ClassicAssert.IsFalse(new NumberValidator(3, 2, true).IsValidNumber("+0.00"));
-        ClassicAssert.IsTrue(new NumberValidator(4, 2, true).IsValidNumber("+1.23"));
-        ClassicAssert.IsFalse(new NumberValidator(3, 2, true).IsValidNumber("+1.23"));
-        ClassicAssert.IsFalse(new NumberValidator(17, 2, true).IsValidNumber("0.000"));
-        ClassicAssert.IsFalse(new NumberValidator(3, 2, true).IsValidNumber("-1.23"));
-        ClassicAssert.IsFalse(new NumberValidator(3, 2, true).IsValidNumber("a.sd"));
+    [TestCase(-1, 2, true)]
+    [TestCase(-1, 2, false)]
+    [TestCase(0, 2, false)]
+    [TestCase(0, 2, true)]
+    public void Constructor_NotPositivePrecision_ThrowsArgumentException(
+        int precision, int scale, bool onlyPositive)
+    {
+        var action = () => 
+        {
+            _ = new NumberValidator(precision, scale, onlyPositive);
+        };
+
+        action.Should().Throw<ArgumentException>();
+    }
+
+    [TestCase(1, -2, true)]
+    [TestCase(1, -2, false)]
+    public void Constructor_NegativeScale_ThrowsArgumentException(
+        int precision, int scale, bool onlyPositive)
+    {
+        var action = () => 
+        {
+            _ = new NumberValidator(precision, scale, onlyPositive);
+        };
+
+        action.Should().Throw<ArgumentException>();
+    }
+
+    [TestCase(1, 0, true)]
+    [TestCase(1, 0, false)]
+    public void Constructor_CorrectArguments_NotThrowArgumentException(
+        int precision, int scale, bool onlyPositive)
+    {
+        var action = () => 
+        {
+            _ = new NumberValidator(precision, scale, onlyPositive);
+        };
+
+        action.Should().NotThrow<ArgumentException>();
+    }
+
+    [TestCase(5, 10, true)]
+    [TestCase(5, 10, false)]
+    [TestCase(5, 5, true)]
+    [TestCase(5, 5, false)]
+    public void Constructor_ScaleGreaterOrEqualsPrecision_ThrowsArgumentException(
+        int precision, int scale, bool onlyPositive)
+    {
+        var action = () => 
+        {
+            _ = new NumberValidator(precision, scale, onlyPositive);
+        };
+
+        action.Should().Throw<ArgumentException>();
+    }
+
+
+    // тесты работы метода IsValidNumber
+
+    [TestCase(3, 2, true, "a.sd")]
+    [TestCase(3, 2, true, "aaa")]
+    [TestCase(3, 2, true, "1/2")]    
+    public void IsValidNumber_InvalidFormat_ReturnsFalse(
+        int precision, int scale, bool onlyPositive, string testValue)
+    {
+        var numberValidator = new NumberValidator(precision, scale, onlyPositive);
+        var actual = numberValidator.IsValidNumber(testValue);
+        actual.Should().BeFalse();
+    }
+    
+    [TestCase(10, 8, true, "-1.23")]
+    [TestCase(10, 8, true, "-1000")]
+    [TestCase(10, 8, true, "-1000.000")]
+    [TestCase(10, 8, true, "-000.000")]
+    [TestCase(10, 8, true, "-012.345")]
+    public void IsValidNumber_NegativeNumberWhenOnlyPositive_ReturnsFalse(
+        int precision, int scale, bool onlyPositive, string testValue)
+    {
+        var numberValidator = new NumberValidator(precision, scale, onlyPositive);
+        var actual = numberValidator.IsValidNumber(testValue);
+        actual.Should().BeFalse();
+    }
+
+    [Test]
+    public void IsValidNumber_IntegerZero_ReturnsTrue()
+    {
+        var numberValidator = new NumberValidator(17, 2, true);
+        var actual = numberValidator.IsValidNumber("0");
+        actual.Should().BeTrue();
+    }
+
+    [Test]
+    public void IsValidNumber_ZeroWithFractionalPart_ReturnsTrue()
+    {
+        var numberValidator = new NumberValidator(17, 2, true);
+        var actual = numberValidator.IsValidNumber("0.0");
+        actual.Should().BeTrue();
+    }
+
+    [TestCase(10, 0, true, "100")]
+    [TestCase(10, 0, true, "4321")]
+    public void IsValidNumber_IntegerWithZeroScale_ReturnsTrue(
+        int precision, int scale, bool onlyPositive, string testValue)
+    {
+        var numberValidator = new NumberValidator(precision, scale, onlyPositive);
+        var actual = numberValidator.IsValidNumber(testValue);
+        actual.Should().BeTrue();
+    }
+
+    [TestCase(10, 0, false, "123.45")]
+    [TestCase(10, 0, false, "0.45")]
+    [TestCase(10, 0, false, "-10.45")]
+    public void IsValidNumber_FractionalNumberWithZeroScale_ReturnsFalse(
+        int precision, int scale, bool onlyPositive, string testValue)
+    {
+        var numberValidator = new NumberValidator(precision, scale, onlyPositive);
+        var actual = numberValidator.IsValidNumber(testValue);
+        actual.Should().BeFalse();
+    }
+
+    [TestCase(3, 2, false, "00.00")]
+    [TestCase(3, 2, false, "-0.00")]
+    [TestCase(3, 2, false, "+0.00")]
+    [TestCase(3, 2, false, "-1.23")]
+    [TestCase(3, 2, false, "+1.23")]
+    public void IsValidNumber_ExceedingPrecision_ReturnsFalse(
+        int precision, int scale, bool onlyPositive, string testValue)
+    {
+        var numberValidator = new NumberValidator(precision, scale, onlyPositive);
+        var actual = numberValidator.IsValidNumber(testValue);
+        actual.Should().BeFalse();
+    }
+
+    [TestCase(17, 2, true, "0.000")]
+    public void IsValidNumber_ExceedingScale_ReturnsFalse(
+        int precision, int scale, bool onlyPositive, string testValue)
+    {
+        var numberValidator = new NumberValidator(precision, scale, onlyPositive);
+        var actual = numberValidator.IsValidNumber(testValue);
+        actual.Should().BeFalse();
+    }
+
+    [Test]
+    public void IsValidNumber_WithLeadingPlus_ReturnsTrue()
+    {
+        var numberValidator = new NumberValidator(4, 2, true);
+        var actual = numberValidator.IsValidNumber("+1.23");
+        actual.Should().BeTrue();
+    }
+
+    [TestCase(10, 8, true, "")]
+    [TestCase(10, 8, false, "")]
+    [TestCase(10, 8, true, "     ")]
+    [TestCase(10, 8, false, "     ")]
+    public void IsValidNumber_EmptyOrWhitespaceString_ReturnsFalse(
+        int precision, int scale, bool onlyPositive, string testValue)
+    {
+        var numberValidator = new NumberValidator(precision, scale, onlyPositive);
+        var actual = numberValidator.IsValidNumber(testValue);
+        actual.Should().BeFalse();
+    }
+
+    [TestCase(10, 8, true)]
+    [TestCase(10, 8, false)]
+    public void IsValidNumber_NullString_ReturnsFalse(
+        int precision, int scale, bool onlyPositive)
+    {
+        var numberValidator = new NumberValidator(precision, scale, onlyPositive);
+        var actual = numberValidator.IsValidNumber(null);
+        actual.Should().BeFalse();
+    }
+
+    [TestCase(10, 5, false, "123,45")]
+    [TestCase(10, 5, false, "0,45")]
+    [TestCase(10, 5, false, "-10,45")]
+    public void IsValidNumber_CommaDelimiter_ReturnsTrue(
+        int precision, int scale, bool onlyPositive, string testValue)
+    {
+        var numberValidator = new NumberValidator(precision, scale, onlyPositive);
+        var actual = numberValidator.IsValidNumber(testValue);
+        actual.Should().BeTrue();
     }
 }
