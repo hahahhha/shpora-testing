@@ -78,9 +78,9 @@ public class NumberValidatorTests
     }
 
     [Test]
-    public void IsValidNumber_IntegerZero_ReturnsTrue()
+    public void IsValidNumber_ZeroWhenOnlyPositive_ReturnsTrue()
     {
-        var numberValidator = new NumberValidator(17, 2, true);
+        var numberValidator = new NumberValidator(1, 0, true);
         var actual = numberValidator.IsValidNumber("0");
         actual.Should().BeTrue();
     }
