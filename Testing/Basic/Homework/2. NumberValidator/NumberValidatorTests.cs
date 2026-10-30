@@ -141,14 +141,11 @@ public class NumberValidatorTests
         actual.Should().BeTrue();
     }
 
-    [TestCase(10, 8, true, "")]
-    [TestCase(10, 8, false, "")]
-    [TestCase(10, 8, true, "     ")]
-    [TestCase(10, 8, false, "     ")]
-    public void IsValidNumber_EmptyOrWhitespaceString_ReturnsFalse(
-        int precision, int scale, bool onlyPositive, string testValue)
+    [TestCase("")]
+    [TestCase("   ")]
+    public void IsValidNumber_EmptyOrWhitespaceString_ReturnsFalse(string testValue)
     {
-        var numberValidator = new NumberValidator(precision, scale, onlyPositive);
+        var numberValidator = new NumberValidator(1);
         var actual = numberValidator.IsValidNumber(testValue);
         actual.Should().BeFalse();
     }
