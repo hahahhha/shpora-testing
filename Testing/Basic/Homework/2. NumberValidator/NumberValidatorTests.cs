@@ -124,11 +124,11 @@ public class NumberValidatorTests
         actual.Should().BeFalse();
     }
 
-    [TestCase(17, 2, true, "0.000")]
-    public void IsValidNumber_ExceedingScale_ReturnsFalse(
-        int precision, int scale, bool onlyPositive, string testValue)
+    [Test]
+    public void IsValidNumber_ExceedingScale_ReturnsFalse()
     {
-        var numberValidator = new NumberValidator(precision, scale, onlyPositive);
+        var testValue = "1.23";
+        var numberValidator = new NumberValidator(4, 1);
         var actual = numberValidator.IsValidNumber(testValue);
         actual.Should().BeFalse();
     }
