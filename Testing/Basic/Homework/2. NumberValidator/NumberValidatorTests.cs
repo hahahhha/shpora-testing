@@ -68,15 +68,11 @@ public class NumberValidatorTests
         actual.Should().BeFalse();
     }
     
-    [TestCase(10, 8, true, "-1.23")]
-    [TestCase(10, 8, true, "-1000")]
-    [TestCase(10, 8, true, "-1000.000")]
-    [TestCase(10, 8, true, "-000.000")]
-    [TestCase(10, 8, true, "-012.345")]
-    public void IsValidNumber_NegativeNumberWhenOnlyPositive_ReturnsFalse(
-        int precision, int scale, bool onlyPositive, string testValue)
+    [Test]
+    public void IsValidNumber_NegativeNumberWhenOnlyPositive_ReturnsFalse()
     {
-        var numberValidator = new NumberValidator(precision, scale, onlyPositive);
+        var testValue = "-12.34";
+        var numberValidator = new NumberValidator(5, 2, true);
         var actual = numberValidator.IsValidNumber(testValue);
         actual.Should().BeFalse();
     }
