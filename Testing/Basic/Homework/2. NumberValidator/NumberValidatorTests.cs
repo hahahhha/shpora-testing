@@ -111,15 +111,15 @@ public class NumberValidatorTests
         actual.Should().BeFalse();
     }
 
-    [TestCase(3, 2, false, "00.00")]
-    [TestCase(3, 2, false, "-0.00")]
-    [TestCase(3, 2, false, "+0.00")]
-    [TestCase(3, 2, false, "-1.23")]
-    [TestCase(3, 2, false, "+1.23")]
+    [TestCase(3, 2, "00.00")]
+    [TestCase(3, 2, "-0.00")]
+    [TestCase(3, 2, "+0.00")]
+    [TestCase(3, 2, "-1.23")]
+    [TestCase(3, 2, "+1.23")]
     public void IsValidNumber_ExceedingPrecision_ReturnsFalse(
-        int precision, int scale, bool onlyPositive, string testValue)
+        int precision, int scale, string testValue)
     {
-        var numberValidator = new NumberValidator(precision, scale, onlyPositive);
+        var numberValidator = new NumberValidator(precision, scale);
         var actual = numberValidator.IsValidNumber(testValue);
         actual.Should().BeFalse();
     }
