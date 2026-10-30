@@ -10,23 +10,18 @@ public class NumberValidatorTests
 
     [TestCase(-1)]
     [TestCase(0)]
-    public void Constructor_NotPositivePrecision_ThrowsArgumentException(
-        int precision)
+    public void Constructor_NotPositivePrecision_ThrowsArgumentException(int precision)
     {
         var action = () => new NumberValidator(precision, 0);
 
         action.Should().Throw<ArgumentException>();
     }
 
-    [TestCase(1, -2, true)]
-    [TestCase(1, -2, false)]
-    public void Constructor_NegativeScale_ThrowsArgumentException(
-        int precision, int scale, bool onlyPositive)
+    [TestCase(-2)]
+    [TestCase(-1)]
+    public void Constructor_NegativeScale_ThrowsArgumentException(int scale)
     {
-        var action = () => 
-        {
-            _ = new NumberValidator(precision, scale, onlyPositive);
-        };
+        var action = () => new NumberValidator(1, scale);
 
         action.Should().Throw<ArgumentException>();
     }
