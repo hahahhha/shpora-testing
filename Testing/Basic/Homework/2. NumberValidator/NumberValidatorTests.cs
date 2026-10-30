@@ -93,12 +93,11 @@ public class NumberValidatorTests
         actual.Should().BeTrue();
     }
 
-    [TestCase(10, 0, true, "100")]
-    [TestCase(10, 0, true, "4321")]
-    public void IsValidNumber_IntegerWithZeroScale_ReturnsTrue(
-        int precision, int scale, bool onlyPositive, string testValue)
+    [Test]
+    public void IsValidNumber_IntegerWithZeroScale_ReturnsTrue()
     {
-        var numberValidator = new NumberValidator(precision, scale, onlyPositive);
+        var testValue = "123";
+        var numberValidator = new NumberValidator(testValue.Length, 0);
         var actual = numberValidator.IsValidNumber(testValue);
         actual.Should().BeTrue();
     }
