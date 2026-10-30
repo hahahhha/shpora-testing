@@ -37,18 +37,12 @@ public class NumberValidatorTests
         action.Should().NotThrow();
     }
 
-    [TestCase(5, 10, true)]
-    [TestCase(5, 10, false)]
-    [TestCase(5, 5, true)]
-    [TestCase(5, 5, false)]
+    [TestCase(5, 10)]
+    [TestCase(5, 5)]
     public void Constructor_ScaleGreaterOrEqualsPrecision_ThrowsArgumentException(
-        int precision, int scale, bool onlyPositive)
+        int precision, int scale)
     {
-        var action = () => 
-        {
-            _ = new NumberValidator(precision, scale, onlyPositive);
-        };
-
+        var action = () => new NumberValidator(precision, scale);
         action.Should().Throw<ArgumentException>();
     }
 
