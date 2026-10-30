@@ -57,7 +57,9 @@ public class NumberValidatorTests
 
     [TestCase(3, 2, true, "a.sd")]
     [TestCase(3, 2, true, "aaa")]
-    [TestCase(3, 2, true, "1/2")]    
+    [TestCase(3, 2, true, "1/2")]
+    [TestCase(3, 2, true, "5.")]
+    [TestCase(3, 2, true, ".1")]
     public void IsValidNumber_InvalidFormat_ReturnsFalse(
         int precision, int scale, bool onlyPositive, string testValue)
     {
