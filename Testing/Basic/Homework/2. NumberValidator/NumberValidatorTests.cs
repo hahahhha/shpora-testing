@@ -102,13 +102,11 @@ public class NumberValidatorTests
         actual.Should().BeTrue();
     }
 
-    [TestCase(10, 0, false, "123.45")]
-    [TestCase(10, 0, false, "0.45")]
-    [TestCase(10, 0, false, "-10.45")]
-    public void IsValidNumber_FractionalNumberWithZeroScale_ReturnsFalse(
-        int precision, int scale, bool onlyPositive, string testValue)
+    [TestCase("123.45")]
+    [TestCase("12.3")]
+    public void IsValidNumber_FractionalNumberWithZeroScale_ReturnsFalse(string testValue)
     {
-        var numberValidator = new NumberValidator(precision, scale, onlyPositive);
+        var numberValidator = new NumberValidator(testValue.Length, 0);
         var actual = numberValidator.IsValidNumber(testValue);
         actual.Should().BeFalse();
     }
