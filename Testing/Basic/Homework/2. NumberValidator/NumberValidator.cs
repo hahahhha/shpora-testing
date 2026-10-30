@@ -5,15 +5,26 @@ namespace HomeExercise.Tasks.NumberValidator;
 public class NumberValidator
 {
     private readonly Regex numberRegex;
+    /// <summary>
+    /// Только положительные
+    /// </summary>
     private readonly bool onlyPositive;
+
+    /// <summary>
+    /// Общее количество цифр с учетом знака, но без учета точки/запятой
+    /// </summary>
     private readonly int precision;
+
+    /// <summary>
+    /// Количество цифр после точки/запятой
+    /// </summary>
     private readonly int scale;
 
     public NumberValidator(int precision, int scale = 0, bool onlyPositive = false)
     {
-        this.precision = precision; // общее количество цифр с учетом знака, но без учета точки/запятой
-        this.scale = scale; // количество цифр после точки/запятой
-        this.onlyPositive = onlyPositive; // только положительные
+        this.precision = precision;
+        this.scale = scale;
+        this.onlyPositive = onlyPositive;
         if (precision <= 0)
             throw new ArgumentException("precision must be a positive number");
         if (scale < 0 || scale >= precision)
