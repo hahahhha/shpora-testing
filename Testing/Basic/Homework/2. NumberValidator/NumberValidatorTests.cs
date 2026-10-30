@@ -55,15 +55,14 @@ public class NumberValidatorTests
 
     // тесты работы метода IsValidNumber
 
-    [TestCase(3, 2, true, "a.sd")]
-    [TestCase(3, 2, true, "aaa")]
-    [TestCase(3, 2, true, "1/2")]
-    [TestCase(3, 2, true, "5.")]
-    [TestCase(3, 2, true, ".1")]
-    public void IsValidNumber_InvalidFormat_ReturnsFalse(
-        int precision, int scale, bool onlyPositive, string testValue)
+    [TestCase("a.sd")]
+    [TestCase("aaa")]
+    [TestCase("1/2")]
+    [TestCase("5.")]
+    [TestCase(".1")]
+    public void IsValidNumber_InvalidFormat_ReturnsFalse(string testValue)
     {
-        var numberValidator = new NumberValidator(precision, scale, onlyPositive);
+        var numberValidator = new NumberValidator(10, 5);
         var actual = numberValidator.IsValidNumber(testValue);
         actual.Should().BeFalse();
     }
@@ -153,7 +152,7 @@ public class NumberValidatorTests
     [Test]
     public void IsValidNumber_NullString_ReturnsFalse()
     {
-        var numberValidator = new NumberValidator(1, 1);
+        var numberValidator = new NumberValidator(1, 0);
         var actual = numberValidator.IsValidNumber(null);
         actual.Should().BeFalse();
     }
