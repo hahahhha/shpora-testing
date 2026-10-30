@@ -8,17 +8,12 @@ public class NumberValidatorTests
 {
     // тесты конструктора
 
-    [TestCase(-1, 2, true)]
-    [TestCase(-1, 2, false)]
-    [TestCase(0, 2, false)]
-    [TestCase(0, 2, true)]
+    [TestCase(-1)]
+    [TestCase(0)]
     public void Constructor_NotPositivePrecision_ThrowsArgumentException(
-        int precision, int scale, bool onlyPositive)
+        int precision)
     {
-        var action = () => 
-        {
-            _ = new NumberValidator(precision, scale, onlyPositive);
-        };
+        var action = () => new NumberValidator(precision, 0);
 
         action.Should().Throw<ArgumentException>();
     }
