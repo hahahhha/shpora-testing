@@ -158,13 +158,12 @@ public class NumberValidatorTests
         actual.Should().BeFalse();
     }
 
-    [TestCase(10, 5, false, "123,45")]
-    [TestCase(10, 5, false, "0,45")]
-    [TestCase(10, 5, false, "-10,45")]
-    public void IsValidNumber_CommaDelimiter_ReturnsTrue(
-        int precision, int scale, bool onlyPositive, string testValue)
+    [TestCase("123,45")]
+    [TestCase("0,45")]
+    [TestCase("-10,45")]
+    public void IsValidNumber_CommaDelimiter_ReturnsTrue(string testValue)
     {
-        var numberValidator = new NumberValidator(precision, scale, onlyPositive);
+        var numberValidator = new NumberValidator(10, 5);
         var actual = numberValidator.IsValidNumber(testValue);
         actual.Should().BeTrue();
     }
