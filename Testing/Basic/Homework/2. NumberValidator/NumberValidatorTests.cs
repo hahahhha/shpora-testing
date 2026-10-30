@@ -26,13 +26,13 @@ public class NumberValidatorTests
         action.Should().Throw<ArgumentException>();
     }
 
-    [TestCase(1, 0, true)] // граничный precision
-    [TestCase(10, 1, true)] // граничный scale
-    [TestCase(10, 9, true)] // граничные значения scale при указанном precision (precision должен быть больше scale)
+    [TestCase(1, 0)] // граничный precision
+    [TestCase(10, 1)] // граничный scale
+    [TestCase(10, 9)] // граничные значения scale при указанном precision (precision должен быть больше scale)
     public void Constructor_CorrectArguments_ShouldCreateInstance(
-        int precision, int scale, bool onlyPositive)
+        int precision, int scale)
     {
-        var action = () => new NumberValidator(precision, scale, onlyPositive);
+        var action = () => new NumberValidator(precision, scale);
 
         action.Should().NotThrow<ArgumentException>();
     }
