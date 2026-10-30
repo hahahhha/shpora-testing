@@ -70,12 +70,6 @@ public class ObjectComparison
                     $"свойство {property.Name} должно совпадать");
             }
         }
-        // в прошлой версии была проблема, что тестирование происходило отдельно по каждому полю
-        // при добавлении новых полей или свойств в класс их нужно было бы дописать и в тесты
-        // плюс можно случайно упустить какое-то поле
-        // в этом и есть проблема 
-        actualTsar.Should().BeEquivalentTo(expectedTsar, options => options.Excluding(
-            (IMemberInfo member) => member.Name == nameof(Person.Id)));
     }
 
     [Test]
