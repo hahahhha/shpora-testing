@@ -28,13 +28,10 @@ public class NumberValidatorTests
 
     [TestCase(1, 0, true)]
     [TestCase(1, 0, false)]
-    public void Constructor_CorrectArguments_NotThrowArgumentException(
+    public void Constructor_CorrectArguments_ShouldCreateInstance(
         int precision, int scale, bool onlyPositive)
     {
-        var action = () => 
-        {
-            _ = new NumberValidator(precision, scale, onlyPositive);
-        };
+        var action = () => new NumberValidator(precision, scale, onlyPositive);
 
         action.Should().NotThrow<ArgumentException>();
     }
