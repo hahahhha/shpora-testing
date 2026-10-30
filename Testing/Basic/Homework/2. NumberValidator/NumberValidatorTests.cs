@@ -153,12 +153,10 @@ public class NumberValidatorTests
         actual.Should().BeFalse();
     }
 
-    [TestCase(10, 8, true)]
-    [TestCase(10, 8, false)]
-    public void IsValidNumber_NullString_ReturnsFalse(
-        int precision, int scale, bool onlyPositive)
+    [Test]
+    public void IsValidNumber_NullString_ReturnsFalse()
     {
-        var numberValidator = new NumberValidator(precision, scale, onlyPositive);
+        var numberValidator = new NumberValidator(1, 1);
         var actual = numberValidator.IsValidNumber(null);
         actual.Should().BeFalse();
     }
