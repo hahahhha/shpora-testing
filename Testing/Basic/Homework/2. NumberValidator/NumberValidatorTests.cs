@@ -34,7 +34,7 @@ public class NumberValidatorTests
     {
         var action = () => new NumberValidator(precision, scale);
 
-        action.Should().NotThrow<ArgumentException>();
+        action.Should().NotThrow();
     }
 
     [TestCase(5, 10, true)]
